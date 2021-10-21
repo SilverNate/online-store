@@ -67,3 +67,56 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 #
 #
 # Online-Store
+
+## Solution
+1. Bad reviews yang datang dari customer penyebabnya adalah ketidakpuasan pelanggan dan merasa dirugikan karena item yang mereka inginkan pada saat flash sale harus di cancel karena ketidakmampuan system mengolah informasi tentang stock yang tersedia. Pada perspective user item tersebut available namun seminggu setelah dilakukan payment, barang tidak kunjung datang dan customer service menelpon kalau order telah di cancel. ini membuat ketidakpercayaan customer terhadap store online kita.
+2. Untuk mencegah kejadian seperti ini terulang kembali, dibutuhkan pengecekan tentang stock yang tersedia setiap pembeli memasukkan item ke cart sampai ke checkout. stock akan berkurang ketika user melakukan order walaupun belum membayar. pada database item stock dibuatkan type data UNSIGNED Big Integer agar data tidak kan minus tetapi, akan membuat value = 0. dengan begitu jika stock = 0 (kosong), pelanggan tidak akan dapat memasukan barang ke cart apalagi ke checkout.
+3. Demontrasi Proof of Concepts menggunakan laravel
+
+
+## Requirement application
+- Laravel 8
+- Sqlite
+- MySQL (Optional)
+- Postman
+
+
+## Answer Proof of Concept
+### How to Implementation
+
+- Make sure your machine already installed composer or laravel installer
+- After installation run this command :
+    ```bash
+        cd Online-Store
+    ```
+- Settings .env file DB_DATABASE dengan membuat file sqlite di folder root/database dan ganti DB_CONNECTION=sqlite
+    ```bash
+        touch database/db.sqlite
+    ```
+- Jalankan Migration Command
+    ```bash
+        php artisan migrate
+    ```
+- Setelah semua perintah sudah di jalankan, saatnya running program :
+    ```bash
+        php artisan serve
+        Starting Laravel development server: http://127.0.0.1:8000
+    ```
+
+
+### Documentation API
+- Link to Postman API : 
+- [Postman Documentation]
+    (https://documenter.getpostman.com/view/8276896/UV5ZBwPH#b61b28db-651b-46c7-bd36-040b2b114659)
+
+
+### Functional Testing command
+- Jalankan di CLI
+    ```bash
+        php artisan test
+    ```
+### Logging ada di file
+- Lokasi file logging laravel
+    ```bash
+        cd storage/log/laravel.blog
+    ```
