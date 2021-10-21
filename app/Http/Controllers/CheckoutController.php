@@ -9,6 +9,7 @@ use App\Models\Quote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
@@ -25,6 +26,7 @@ class CheckoutController extends Controller
             ]);
 
             if ($validator->fails()) {
+                Log::error($validator->errors());
                 return response()->json($validator->errors());
             }
 
@@ -32,6 +34,8 @@ class CheckoutController extends Controller
 
             //check items
             if (count($Items) < 1) {
+                Log::debug("data item not found when add to cart");
+
                 return response()->json([
                     'status' => ['code' => 304, "response" => "Failed", "message" => "data item not found."],
                     'result' => [],
@@ -46,6 +50,8 @@ class CheckoutController extends Controller
 
             if ($qty < 1 || $enble == false) {
                 $is_checkout = false;
+                Log::debug("quantity not enough or saleable when add to cart");
+
                 return response()->json([
                     'status' => ['code' => 202, "response" => "Failed", "message" => "quantity not enough or not saleable."],
                     'result' => [],
@@ -56,6 +62,8 @@ class CheckoutController extends Controller
             $checkStock = $qty - $request->quantity;
 
             if ($checkStock < 0) {
+                Log::debug("quantity not enough when add to cart");
+
                 return response()->json([
                     'status' => ['code' => 202, "response" => "Failed", "message" => "not enough quantity."],
                     'result' => [],
@@ -119,6 +127,8 @@ class CheckoutController extends Controller
                 ];
             }
 
+            Log::info("success add to cart : ". json_encode($results));
+
             return response()->json([
                 $results,
             ]);
@@ -131,6 +141,8 @@ class CheckoutController extends Controller
             $cart = Cart::where('user_id', $request->user()->id)
                 ->where('status', 'pending')
                 ->get();
+
+            Log::info("success GetAllCart : ". json_encode($cart));
 
             return response()->json([
                 'status' => ['code' => 200, "response" => "Success", "message" => "Success get data cart."],
@@ -148,6 +160,8 @@ class CheckoutController extends Controller
                 ->where('id', $request->cart_id)
                 ->where('status', 'pending')
                 ->get();
+
+            Log::info("success GetCartDetails : ". json_encode($cart));
 
             return response()->json([
                 'status' => ['code' => 200, "response" => "Success", "message" => "Success get data cart detail user."],
@@ -170,6 +184,8 @@ class CheckoutController extends Controller
                 ->get();
 
             if (count($checkCart) < 1) {
+                Log::error("data cart_id not found");
+
                 return response()->json([
                     'status' => ['code' => 202, "response" => "Failed", "message" => "data cart_id not found."],
                     'results' => [],
@@ -224,6 +240,8 @@ class CheckoutController extends Controller
             foreach ($simpans as $key => $value) {
                 $this->decreaseStock($value[$key]['item_id'], $value[$key]['quantity'], $value[$key]['cart_id']);
             }
+
+            Log::info("success checkout : ". json_encode($saveTocheckout));
 
             return response()->json([
                 'status' => ['code' => 200, "response" => "Success", "message" => "Success checkout order."],
