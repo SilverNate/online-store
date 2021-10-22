@@ -93,6 +93,11 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
     ```bash
         touch database/db.sqlite
     ```
+- Jalankan Seeder Command
+    ```bash
+        php artisan db:seed
+    ```
+
 - Jalankan Migration Command
     ```bash
         php artisan migrate
